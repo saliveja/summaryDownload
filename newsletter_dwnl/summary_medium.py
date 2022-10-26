@@ -2,7 +2,7 @@ import feedparser
 import requests, bs4
 import summarize
 
-def sum_medium(link, link_index):
+def sum_medium(link):
     """Summary of selected medium articles."""
 
     links = []
@@ -20,7 +20,9 @@ def sum_medium(link, link_index):
         dates.append(date)
 
     title = titles[0]
-    address = links[link_index]
+    address = links[0]
+    date = dates[0]
+    date_select = date[:16]
 
     req1 = requests.get(address, headers={'User-Agent': 'Mozilla/5.0'})
     soup1 = bs4.BeautifulSoup(req1.text, 'html.parser')
@@ -31,7 +33,7 @@ def sum_medium(link, link_index):
 
     article_str = ' '.join(article_to_sum)
     sum = summarize.summarize(article_str, 0.05)
-    return title, date, sum, address
+    return title, date_select, sum, address
     dates.clear()
 
-# sum_medium("https://medium.com/@cryptocreddy/feed", 0)
+#sum_medium("https://medium.com/@cryptocreddy/feed")

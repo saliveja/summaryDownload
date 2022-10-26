@@ -43,7 +43,7 @@ Anywhere on ~/PATH update, install wget, and install wkhtmltox tool:
 ```
 $ sudo apt update
 $ sudo apt install wget
-$ wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+$ wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb 
 $ sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
 (The two last commands are including packages for Ubuntu. Please check needed packade here: https://wkhtmltopdf.org/downloads.html)
 ```
