@@ -86,7 +86,7 @@ def summarize_chosen_article():
             else:
                 title, date, sum, address = summary.summary(link)
 
-        print(f"\n{i + 1} - '{title}':\n{date} \n{sum}")
+        print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
         print(address)
         #
         # answer_download = input("\nDo you want to download this article? y/n\t")
