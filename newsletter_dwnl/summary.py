@@ -48,7 +48,7 @@ def summary(link):
         sum = article_str
         print("!! THIS IS A PAYWALLED ARTICLE !!")
     else:
-    #print(f"{title}, {date}\n{sum}\n{address}\n\n")
+        #print(f"{title}, {date}\n{sum}\n{address}\n\n")
         return title, date, sum, address
 
 
