@@ -28,23 +28,7 @@ class TextSummaryDownload:
 
     def __init__(self):
         """initializing."""
-        self.index = index
-        self.dicts = get_dicts()
-        self.link = link
-
-    def print_help_message(self):
-        """print help text and description"""
-
-        print("This is a program to summarize and download selected newsletters.\n"
-              "When selecting action you should only specify one argument.\n\n")
-
-        data = [['-i <index>', 'Summarizes selected newsletter'],
-                ['-d <download>', 'Downloading selected newsletter'],
-                ['-l <list>', 'Returns the list of newsletter']]
-        info = tabulate(data, headers=["cmd", "syntax: summary_and_download.py "
-                                              "<index> <download> <list> (one pos arg)",
-                                       " ", " "])
-        print(info)
+        self.dicts = self.get_dicts()
 
     def get_dicts(self):
         file = 'dict.json'
@@ -53,12 +37,7 @@ class TextSummaryDownload:
 
         return dicts
 
-    # def display_summary_list(self, args):
-    #     """command -l in parser"""
-    #     if args.list:
-    #         display_summary_headers()
-
-    def summary_headers(self):
+    def summary_headers(self, args):
         """Prints an enumerated list of all authors to choose summary of"""
 
         print("\n")
@@ -67,13 +46,7 @@ class TextSummaryDownload:
             print(f"{i} - {item.strip()}")
         print("\n")
 
-    # def display_sumall(self, args):
-    #     """-sa in parser, summary of all articles."""
-    #
-    #     if args.sumall:
-    #         all_articles_summary()
-
-    def all_articles_summary(self):
+    def all_articles_summary(self, args):
         """Printing summary of all articles in the dict"""
 
         for i, (item, dct) in enumerate(self.dicts.items()):
@@ -90,18 +63,12 @@ class TextSummaryDownload:
         print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
         print(address)
 
-    # def display_summary(self, args):
-    #     """-s in parser. Displays summary of selected newsletters."""
-    #
-    #     if args.summary:
-    #         summarize_chosen_article()
-
-    def summarize_chosen_article(self):
+    def summarize_chosen_article(self, args):
         """Displays a summary of an article based on users choice"""
 
-        for i, (item, dct) in enumerate(self.dicts.items()):
-            if i == args.index:
-                name = item
+        i = args.index
+        for i, (item, dct) in enumerate(self.dicts.items(), 1):
+            name = item
             for key, link in dct.items():
                 link = dct['link']
             if link.endswith('feed'):
@@ -114,7 +81,7 @@ class TextSummaryDownload:
 
         # def function for download connected to argparse
 
-    def download(self, choice=100):
+    def download(self, args, choice=100):
         """Downloading selected article."""
 
         while True:
@@ -132,13 +99,7 @@ class TextSummaryDownload:
                 else:
                     d.article_download(link)
 
-    # def delete_newsletter(self):
-    #     """-del in parser. Delete selected newsletter."""
-    #
-    #     if args.delete:
-    #         remove_dictItem()
-
-    def remove_dictItem(self):
+    def remove_dictItem(self, args):
         """Removing key and value from dictionary"""
 
         dict_copy = copy.copy(self.dicts)
@@ -160,6 +121,7 @@ class TextSummaryDownload:
             prog='Newsletter summary and download',
             description='summary and download of selected newsletters')
 
+        # version
         parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
         subparsers = parser.add_subparsers(
             help="{subcommand}[-h] shows all the options")
@@ -168,43 +130,50 @@ class TextSummaryDownload:
         parser_summary = subparsers.add_parser('summary', help=
         'summary of selected newsletter', aliases=['s'])
 
-        parser_summary.add_argument('i', 'index', help=
-        'summary of selected newsletters', action='store_true')
+        parser_summary.add_argument('index', help=
+        'choose # of newsletter to summarize')
 
-        parser_summary.add_argument('a', 'sumall', help=
-        'summary of all newsletters', action='store_true')
-        parser_summary.set_defaults(func=summarize_chosen_article)
+        parser_summary.set_defaults(func=self.summarize_chosen_article)
 
+        # summarize all arg
+        parser_summary = subparsers.add_parser('sumall', help=
+        'summary of all newsletters', aliases=['a'])
+
+        # parser_summary.add_argument('index', help=
+        # '', action='store_true')
+        parser_summary.set_defaults(func=all_articles_summary)
 
         # download arg
         parser_download = subparsers.add_parser('download', help=
         'downloading selected newsletters', aliases=['d'])
 
-        parser_download.add_argument('i', 'index', help=
+        parser_download.add_argument('index', help=
         'downloading selected newsletters', action='store_true')
-        parser_download.set_defaults(func=download)
-
+        parser_download.set_defaults(func=self.download)
 
         # list arg
         parser_list = subparsers.add_parser('list', help=
         'displays list of newsletters that can be summarized and downloaded',
                                             aliases=['l'])
 
-        parser_list.add_argument('i', 'index', help=
-        'displays list of newsletters that can be summarized and downloaded',
-                                 action='store_true')
-        parser_list.set_defaults(func=summary_headers)
+        # parser_list.add_argument('index', help=
+        # 'displays list of newsletters that can be summarized and downloaded',
+        #                          action='store_true')
+
+
+        parser_list.set_defaults(func=self.summary_headers)
 
         ## edit arg
         # parser_edit = subparser.add_parser('edit', help=
         # 'edit newsletter list', aliases=['e'])
         # parser_edit.set_defaults(func=remove_dictItem)
 
-
-
-        parser.parse_args()
+        args = parser.parse_args()
         args.func(args)
 
 if __name__ == '__main__':
     sd = TextSummaryDownload()
     sd.parser_main()
+
+
+
