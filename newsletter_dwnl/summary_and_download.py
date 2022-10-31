@@ -131,7 +131,7 @@ class TextSummaryDownload:
 
         # parser_summary.add_argument('index', help=
         # '', action='store_true')
-        parser_summary.set_defaults(func=all_articles_summary)
+        parser_summary.set_defaults(func=self.all_articles_summary)
 
         # download arg
         parser_download = subparsers.add_parser('download', help=
