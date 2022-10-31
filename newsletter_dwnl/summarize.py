@@ -3,6 +3,7 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from string import punctuation
 from heapq import nlargest
 
+
 def summarize(text, per):
     nlp = spacy.load('en_core_web_sm')
     doc= nlp(text)

@@ -1,12 +1,12 @@
 import feedparser
 import pdfkit
 
+
 def download_medium(link):
     """Downloading the latest Medium article."""
 
     links = []
     titles = []
-
 
     feed = feedparser.parse(link)
     for entry in feed.entries:

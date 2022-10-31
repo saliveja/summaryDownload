@@ -1,5 +1,5 @@
 # README
-Zoo
+
 **Main program: summary_and_download.py**
 
 ## Introduction

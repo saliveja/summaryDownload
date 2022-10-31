@@ -1,6 +1,8 @@
+import bs4
 import feedparser
-import requests, bs4
+import requests
 import summarize
+
 
 def sum_medium(link):
     """Summary of selected medium articles."""
@@ -36,4 +38,4 @@ def sum_medium(link):
     return title, date_select, sum, address
     dates.clear()
 
-#sum_medium("https://medium.com/@cryptocreddy/feed")
+    #   sum_medium("https://medium.com/@cryptocreddy/feed")

@@ -1,13 +1,3 @@
-#TODO:
-# 2) Save pdfs to /~/pdf folder, not to the main folder,
-# - name pdfs more descriptive, so every new one has a unique name (not overwriting)
-# 3) CLI with users choices
-# - Display all new headers
-# - Display chosen summary
-# - Display all summaries
-# - Add/Delete a newsletter from the dict
-
-
 import summary
 import download as d
 import summary_medium as sm
@@ -22,6 +12,7 @@ import sys
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
+
 
 class TextSummaryDownload:
     """program that on selection summarize and download newsletters."""
@@ -58,7 +49,6 @@ class TextSummaryDownload:
                 title, date, sum, address = sm.sum_medium(link)
             else:
                 title, date, sum, address = summary.summary(link)
-
 
         print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
         print(address)
@@ -104,7 +94,7 @@ class TextSummaryDownload:
 
         dict_copy = copy.copy(self.dicts)
 
-        for i,  item in enumerate(dict_copy.keys()):
+        for i, item in enumerate(dict_copy.keys()):
             if i == choice:
                 choice = item
                 del self.dict[choice]
@@ -152,14 +142,11 @@ class TextSummaryDownload:
         parser_download.set_defaults(func=self.download)
 
         # list arg
-        parser_list = subparsers.add_parser('list', help=
-        'displays list of newsletters that can be summarized and downloaded',
-                                            aliases=['l'])
+        parser_list = subparsers.add_parser('list', help='displays list of newsletters that can be summarized and downloaded', aliases=['l'])
 
         # parser_list.add_argument('index', help=
         # 'displays list of newsletters that can be summarized and downloaded',
         #                          action='store_true')
-
 
         parser_list.set_defaults(func=self.summary_headers)
 
@@ -171,9 +158,7 @@ class TextSummaryDownload:
         args = parser.parse_args()
         args.func(args)
 
+
 if __name__ == '__main__':
     sd = TextSummaryDownload()
     sd.parser_main()
-
-
-

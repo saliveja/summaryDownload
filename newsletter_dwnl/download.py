@@ -1,5 +1,7 @@
+import bs4
 import pdfkit
-import requests, bs4
+import requests
+
 
 def article_download(link):
     """Downloading the latest article."""
@@ -55,4 +57,4 @@ def article_download(link):
     # converting html to pdf and downloading
     print(f"Created PDF successfully!")
 
-#article_download("https://themacrocompass.substack.com/archive")
+#   article_download("https://themacrocompass.substack.com/archive")

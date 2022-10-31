@@ -1,4 +1,6 @@
-import requests, bs4
+import bs4
+import requests
+
 import summarize
 
 
@@ -21,8 +23,7 @@ def summary(link):
         titles.append(post_title.text)
         title = f"'{titles[0]}'"
 
-        post_description_html = post.find("a",
-                                     class_="post-preview-description")
+        post_description_html = post.find("a", class_="post-preview-description")
         descriptions.append(post_description_html.text[13:])
         description = descriptions[0]
 
@@ -34,7 +35,7 @@ def summary(link):
         dates.append(post_date['datetime'][:10])
         date = dates[0]
 
-        #print(f"{title}, {date}\n{description}\n{address}\n\n")
+    #       print(f"{title}, {date}\n{description}\n{address}\n\n")
 
     req1 = requests.get(address, headers={'User-Agent': 'Mozilla/5.0'})
     soup1 = bs4.BeautifulSoup(req1.text, 'html.parser')
@@ -48,9 +49,7 @@ def summary(link):
         sum = article_str
         print("!! THIS IS A PAYWALLED ARTICLE !!")
     else:
-        #print(f"{title}, {date}\n{sum}\n{address}\n\n")
+        #   print(f"{title}, {date}\n{sum}\n{address}\n\n")
         return title, date, sum, address
 
-
-
-#summary("https://themacrocompass.substack.com/archive")
+        #   summary("https://themacrocompass.substack.com/archive")
