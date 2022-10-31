@@ -53,15 +53,13 @@ class TextSummaryDownload:
             name = item
             for key, index in dct.items():
                 link = dct["link"]
+                if link.endswith('feed'):
+                    title, date, sum, address = sm.sum_medium(link)
+                else:
+                    title, date, sum, address = summary.summary(link)
 
-            if link.endswith('feed'):
-                title, date, sum, address = sm.sum_medium(link)
-            else:
-                title, date, sum, address = summary.summary(link)
-
-
-        print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
-        print(address)
+                print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
+                print(address)
 
     def summarize_chosen_article(self, args):
         """Displays a summary of an article based on users choice"""
@@ -135,13 +133,13 @@ class TextSummaryDownload:
 
         parser_summary.set_defaults(func=self.summarize_chosen_article)
 
-        # summarize all arg
-        parser_summary = subparsers.add_parser('sumall', help=
+        # summary all arg
+        parser_summary_all = subparsers.add_parser('sumall', help=
         'summary of all newsletters', aliases=['a'])
-
+        #
         # parser_summary.add_argument('index', help=
-        # '', action='store_true')
-        parser_summary.set_defaults(func=all_articles_summary)
+        # 'Index 0 summarizes all newsletter', action='store_true')
+        parser_summary_all.set_defaults(func=self.all_articles_summary)
 
         # download arg
         parser_download = subparsers.add_parser('download', help=
@@ -155,11 +153,6 @@ class TextSummaryDownload:
         parser_list = subparsers.add_parser('list', help=
         'displays list of newsletters that can be summarized and downloaded',
                                             aliases=['l'])
-
-        # parser_list.add_argument('index', help=
-        # 'displays list of newsletters that can be summarized and downloaded',
-        #                          action='store_true')
-
 
         parser_list.set_defaults(func=self.summary_headers)
 
