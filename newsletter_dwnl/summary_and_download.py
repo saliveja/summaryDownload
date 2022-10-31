@@ -7,7 +7,6 @@
 # - Display all summaries
 # - Add/Delete a newsletter from the dict
 
-
 import summary
 import download as d
 import summary_medium as sm
@@ -22,6 +21,7 @@ import sys
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
+
 
 class TextSummaryDownload:
     """program that on selection summarize and download newsletters."""
@@ -65,17 +65,22 @@ class TextSummaryDownload:
         """Displays a summary of an article based on users choice"""
 
         i = args.index
-        for i, (item, dct) in enumerate(self.dicts.items(), 1):
-            name = item
-            for key, link in dct.items():
-                link = dct['link']
-            if link.endswith('feed'):
-                title, date, sum, address = sm.sum_medium(link)
-            else:
-                title, date, sum, address = summary.summary(link)
+        if i == 0:
+            self.all_articles_summary()
+        else:
+            for i, (item, dct) in enumerate(self.dicts.items()):
+                name = item
+                for key, link in dct.items():
+                    link = dct['link']
+                    if link.endswith('feed'):
+                        title, date, sum, address = sm.sum_medium(link)
+                    else:
+                        title, date, sum, address = summary.summary(link)
 
-        print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
-        print(address)
+                print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
+                print(address)
+
+
 
         # def function for download connected to argparse
 
@@ -129,17 +134,19 @@ class TextSummaryDownload:
         'summary of selected newsletter', aliases=['s'])
 
         parser_summary.add_argument('index', help=
-        'choose # of newsletter to summarize')
+        'choose # of newsletter to summarize. 0 summarizes all newsletters ')
+
+        # parser_summary.add_argument('sumall', help='summary of all newsletters')
 
         parser_summary.set_defaults(func=self.summarize_chosen_article)
 
-        # summary all arg
-        parser_summary_all = subparsers.add_parser('sumall', help=
-        'summary of all newsletters', aliases=['a'])
-        #
-        # parser_summary.add_argument('index', help=
-        # 'Index 0 summarizes all newsletter', action='store_true')
-        parser_summary_all.set_defaults(func=self.all_articles_summary)
+        # # summary all arg
+        # parser_summary_all = subparsers.add_parser('sumall', help=
+        # 'summary of all newsletters', aliases=['a'])
+        # #
+        # # parser_summary.add_argument('index', help=
+        # # 'Index 0 summarizes all newsletter', action='store_true')
+        # parser_summary_all.set_defaults(func=self.all_articles_summary)
 
         # download arg
         parser_download = subparsers.add_parser('download', help=
