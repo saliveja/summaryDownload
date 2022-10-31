@@ -98,7 +98,7 @@ class TextSummaryDownload:
                     link = dct["link"]
 
                 if link.endswith('feed'):
-                    dm.download_medium(link)
+                    file_medium = dm.download_medium(link)
                 else:
                     d.article_download(link)
 
