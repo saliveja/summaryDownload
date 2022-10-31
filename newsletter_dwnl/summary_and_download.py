@@ -44,30 +44,34 @@ class TextSummaryDownload:
             name = item
             for key, index in dct.items():
                 link = dct["link"]
+                if link.endswith('feed'):
+                    title, date, sum, address = sm.sum_medium(link)
+                else:
+                    title, date, sum, address = summary.summary(link)
 
-            if link.endswith('feed'):
-                title, date, sum, address = sm.sum_medium(link)
-            else:
-                title, date, sum, address = summary.summary(link)
-
-        print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
-        print(address)
+                print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
+                print(address)
 
     def summarize_chosen_article(self, args):
         """Displays a summary of an article based on users choice"""
 
         i = args.index
-        for i, (item, dct) in enumerate(self.dicts.items(), 1):
-            name = item
-            for key, link in dct.items():
-                link = dct['link']
-            if link.endswith('feed'):
-                title, date, sum, address = sm.sum_medium(link)
-            else:
-                title, date, sum, address = summary.summary(link)
+        if i == 0:
+            self.all_articles_summary()
+        else:
+            for i, (item, dct) in enumerate(self.dicts.items()):
+                name = item
+                for key, link in dct.items():
+                    link = dct['link']
+                    if link.endswith('feed'):
+                        title, date, sum, address = sm.sum_medium(link)
+                    else:
+                        title, date, sum, address = summary.summary(link)
 
-        print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
-        print(address)
+                print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
+                print(address)
+
+
 
         # def function for download connected to argparse
 
@@ -85,7 +89,7 @@ class TextSummaryDownload:
                     link = dct["link"]
 
                 if link.endswith('feed'):
-                    dm.download_medium(link)
+                    file_medium = dm.download_medium(link)
                 else:
                     d.article_download(link)
 
@@ -121,7 +125,9 @@ class TextSummaryDownload:
         'summary of selected newsletter', aliases=['s'])
 
         parser_summary.add_argument('index', help=
-        'choose # of newsletter to summarize')
+        'choose # of newsletter to summarize. 0 summarizes all newsletters ')
+
+        # parser_summary.add_argument('sumall', help='summary of all newsletters')
 
         parser_summary.set_defaults(func=self.summarize_chosen_article)
 
