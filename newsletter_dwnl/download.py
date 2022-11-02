@@ -57,13 +57,6 @@ def article_download(link, name):
     # converting html to pdf and downloading
     print(f"Created PDF successfully!")
 
-    # origin = '/home/x/src/summaryDownload/newsletter_dwnl/'
-    # target = '/home/x/Documents/newsletter_pdf/'
-    #
-    # for file in os.dir(origin):
-    #     if file.endswith('.pdf'):
-    #         shutil.move(os.path.join(origin, file), target)
-
     quit()
 
 
