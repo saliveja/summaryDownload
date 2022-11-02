@@ -19,7 +19,7 @@ def download_medium(link):
     address = links[0]
 
     print(f"Creating PDF from address: {address}")
-    pdfkit.from_url(address, f"{title}.pdf")
+    pdfkit.from_url(address, f"/home/<user>/<dir>/{name}, '{title}'.pdf")
     # converting html to pdf and downloading
     print(f"Created PDF {title} successfully!")
     links.clear()
