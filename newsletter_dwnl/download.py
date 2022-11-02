@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import shutil
 
-def article_download(link):
+def article_download(link, name):
     """Downloading the latest article."""
 
     res = requests.get(link, headers={'User-Agent': 'Mozilla/5.0'})
@@ -53,9 +53,18 @@ def article_download(link):
     title = title_select[0]
 
     print(f"Creating PDF from address: {address}")
-    pdfkit.from_url(address, f'{title}.pdf')
+    pdfkit.from_url(address, f"/home/<user>/<dir>/{name}, '{title}'.pdf")
     # converting html to pdf and downloading
     print(f"Created PDF successfully!")
+
+    # origin = '/home/x/src/summaryDownload/newsletter_dwnl/'
+    # target = '/home/x/Documents/newsletter_pdf/'
+    #
+    # for file in os.dir(origin):
+    #     if file.endswith('.pdf'):
+    #         shutil.move(os.path.join(origin, file), target)
+
     quit()
+
 
 #article_download("https://themacrocompass.substack.com/archive")

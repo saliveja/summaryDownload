@@ -77,38 +77,52 @@ class TextSummaryDownload:
                     else:
                         title, date, sum, address = summary.summary(link)
 
-                print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
-                print(address)
+                    print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
+                    print(address)
 
         # def function for download connected to argparse
 
     def download(self, args):
         """Downloading selected article."""
+        index = int(args.index) - 1
 
-        for i, (item, dct) in enumerate(self.dicts.items()):
-            if i == args.index:
+        for i, item in enumerate(self.dicts.keys()):
+            if i == index:
+                link = self.dicts[item]["link"]
                 name = item
-            for key, index in dct.items():
-                link = dct["link"]
 
                 if link.endswith('feed'):
-                    file_medium = dm.download_medium(link)
+                    dm.download_medium(link)
                 else:
-                    d.article_download(link)
+                    d.article_download(link, name)
 
     def remove_dictItem(self, args):
         """Removing key and value from dictionary."""
 
-        for i,  item in enumerate(self.dicts.items()):
-            if i == args.index:
-                choice = item
-                del_item = self.dicts.pop(choice)
-                print(f"You removed {del_item}")
+        dicts = self.dicts
+        index = int(args.index) - 1
+        for i, item in enumerate(dicts.keys()):
+            if i == index:
+                delete = item
 
-                print("\n")
-                for i, item in enumerate(self.dicts, 1):
-                    print(f"{i} - {item.strip()}")
-                    print("\n")
+        rm_item = dicts.pop(delete)
+        print(f"{rm_item} has been deleted")
+
+        print("The new list will look like this:")
+        for i, item in enumerate(dicts, 1):
+            print(f"{i} - {item.strip()}")
+        self.new_dict(dicts)
+
+    def new_dict(self, dicts):
+        """Save edited dictionary."""
+
+        file = 'dict.json'
+        answer = input("Are you sure you want to save this list? y/n ")
+        if answer == 'y':
+            with open(file, 'w+') as f:
+                json.dump(dicts, f, indent=2)
+        else:
+            quit()
 
     def parser_main(self):
         """argparser - storing arguments and setting default functions."""
@@ -156,8 +170,8 @@ class TextSummaryDownload:
         parser_list.set_defaults(func=self.summary_headers)
 
         # edit arg
-        parser_edit = subparsers.add_parser('edit', help=
-        'edit newsletter list', aliases=['e'])
+        parser_edit = subparsers.add_parser('delete', help=
+        'delete newsletter from list', aliases=['del'])
 
         parser_edit.add_argument('index', help=
         'Choose # of newsletter to remove')
