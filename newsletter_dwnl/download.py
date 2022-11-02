@@ -1,5 +1,8 @@
 import pdfkit
 import requests, bs4
+import os
+from pathlib import Path
+import shutil
 
 def article_download(link):
     """Downloading the latest article."""
@@ -22,7 +25,6 @@ def article_download(link):
             indices.append(index)
     link_index = indices[0]
     item_pos = int(link_index) + 1
-    print(item_pos)
     new_link = links[item_pos]
     link_select.append(new_link)
 
@@ -54,5 +56,6 @@ def article_download(link):
     pdfkit.from_url(address, f'{title}.pdf')
     # converting html to pdf and downloading
     print(f"Created PDF successfully!")
+    quit()
 
 #article_download("https://themacrocompass.substack.com/archive")

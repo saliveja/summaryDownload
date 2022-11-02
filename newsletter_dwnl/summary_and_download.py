@@ -21,10 +21,10 @@ import sys
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
-
+import os
 
 class TextSummaryDownload:
-    """program that on selection summarize and download newsletters."""
+    """program which based on selection can summarize and download newsletters."""
 
     def __init__(self):
         """initializing."""
@@ -38,7 +38,7 @@ class TextSummaryDownload:
         return dicts
 
     def summary_headers(self, args):
-        """Prints an enumerated list of all authors to choose summary of"""
+        """Prints a list of all authors in dict."""
 
         print("\n")
 
@@ -47,7 +47,7 @@ class TextSummaryDownload:
         print("\n")
 
     def all_articles_summary(self, args):
-        """Printing summary of all articles in the dict"""
+        """Printing summary of all articles in the dict."""
 
         for i, (item, dct) in enumerate(self.dicts.items()):
             name = item
@@ -62,7 +62,7 @@ class TextSummaryDownload:
                 print(address)
 
     def summarize_chosen_article(self, args):
-        """Displays a summary of an article based on users choice"""
+        """Summarize selected article."""
 
         i = args.index
         if i == 0:
@@ -80,22 +80,16 @@ class TextSummaryDownload:
                 print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
                 print(address)
 
-
-
         # def function for download connected to argparse
 
-    def download(self, args, choice=100):
+    def download(self, args):
         """Downloading selected article."""
 
-        while True:
-            if choice == 100:
-                choice = args.index
-
-            for i, (item, dct) in enumerate(self.dicts.items()):
-                if i == choice:
-                    name = item
-                for key, index in dct.items():
-                    link = dct["link"]
+        for i, (item, dct) in enumerate(self.dicts.items()):
+            if i == args.index:
+                name = item
+            for key, index in dct.items():
+                link = dct["link"]
 
                 if link.endswith('feed'):
                     dm.download_medium(link)
@@ -103,18 +97,16 @@ class TextSummaryDownload:
                     d.article_download(link)
 
     def remove_dictItem(self, args):
-        """Removing key and value from dictionary"""
+        """Removing key and value from dictionary."""
 
-        dict_copy = copy.copy(self.dicts)
-
-        for i,  item in enumerate(dict_copy.keys()):
-            if i == choice:
+        for i,  item in enumerate(self.dicts.items()):
+            if i == args.index:
                 choice = item
-                del self.dict[choice]
-                print(f"You removed {choice}")
+                del_item = self.dicts.pop(choice)
+                print(f"You removed {del_item}")
 
                 print("\n")
-                for i, item in enumerate(dict_copy, 1):
+                for i, item in enumerate(self.dicts, 1):
                     print(f"{i} - {item.strip()}")
                     print("\n")
 
@@ -153,7 +145,7 @@ class TextSummaryDownload:
         'downloading selected newsletters', aliases=['d'])
 
         parser_download.add_argument('index', help=
-        'downloading selected newsletters', action='store_true')
+        'Choose # of newsletter to download')
         parser_download.set_defaults(func=self.download)
 
         # list arg
@@ -163,10 +155,14 @@ class TextSummaryDownload:
 
         parser_list.set_defaults(func=self.summary_headers)
 
-        ## edit arg
-        # parser_edit = subparser.add_parser('edit', help=
-        # 'edit newsletter list', aliases=['e'])
-        # parser_edit.set_defaults(func=remove_dictItem)
+        # edit arg
+        parser_edit = subparsers.add_parser('edit', help=
+        'edit newsletter list', aliases=['e'])
+
+        parser_edit.add_argument('index', help=
+        'Choose # of newsletter to remove')
+
+        parser_edit.set_defaults(func=self.remove_dictItem)
 
         args = parser.parse_args()
         args.func(args)
