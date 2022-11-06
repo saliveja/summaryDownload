@@ -1,23 +1,10 @@
-#TODO:
-# 2) Save pdfs to /~/pdf folder, not to the main folder,
-# - name pdfs more descriptive, so every new one has a unique name (not overwriting)
-# 3) CLI with users choices
-# - Display all new headers
-# - Display chosen summary
-# - Display all summaries
-# - Add/Delete a newsletter from the dict
-
 import summary
 import download as d
 import summary_medium as sm
 import download_medium as dm
-from datetime import date, datetime, timedelta
-import time
-import copy
 import json
 import argparse
 import requests, bs4
-import os
 
 class TextSummaryDownload:
     """program which based on selection can summarize and download newsletters."""
