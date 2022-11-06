@@ -20,18 +20,12 @@ def summary(link):
     for post in result:
         post_title = post.find("a", class_="post-preview-title")
         titles.append(post_title.text)
-        title = f"'{titles[0]}'"
+        title = f"{titles[0]}"
 
-    # result_name = soup.find_all("div", class_="topbar-content")
-    # for post_1 in result_name:
-    #     post_name = post_1.find("a", class_="navbar-title-link")
-    #     names.append(post_name.text)
-    #     name = f"{names[0]}"
-
-        post_description_html = post.find("a",
-                                     class_="post-preview-description")
-        descriptions.append(post_description_html.text[13:])
-        description = descriptions[0]
+        # post_description_html = post.find("a",
+        #                              class_="post-preview-description")
+        # descriptions.append(post_description_html.text[13:])
+        # description = descriptions[0]
 
         post_url = post.find("a", class_="post-preview-description")
         links.append(post_url['href'])

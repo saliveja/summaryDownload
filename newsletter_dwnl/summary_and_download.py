@@ -21,7 +21,7 @@ class TextSummaryDownload:
 
         return dicts
 
-    def summary_headers(self, args):
+    def summary_headers(self):
         """Prints a list of all authors in dict."""
 
         print("\n")
@@ -30,7 +30,7 @@ class TextSummaryDownload:
             print(f"{i} - {item.strip()}")
         print("\n")
 
-    def all_articles_summary(self, args):
+    def all_articles_summary(self):
         """Printing summary of all articles in the dict."""
 
         for i, (item, dct) in enumerate(self.dicts.items()):
@@ -48,13 +48,14 @@ class TextSummaryDownload:
     def summarize_chosen_article(self, args):
         """Summarize selected article."""
 
-        i = args.index
-        if i == 0:
+        index = int(args.index) -1
+
+        if index == 0:
             self.all_articles_summary()
         else:
             for i, (item, dct) in enumerate(self.dicts.items()):
-                name = item
-                for key, link in dct.items():
+                if i == index:
+                    name = item
                     link = dct['link']
                     if link.endswith('feed'):
                         title, date, sum, address = sm.sum_medium(link)
@@ -63,8 +64,6 @@ class TextSummaryDownload:
 
                     print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
                     print(address)
-
-        # def function for download connected to argparse
 
     def download(self, args):
         """Downloading selected article."""
@@ -151,16 +150,17 @@ class TextSummaryDownload:
 
         # summary arg
         parser_summary = subparsers.add_parser('summary', help=
-        'summary of selected newsletter', aliases=['s'])
+        'summary of selected newsletter. Syntax: <s> <index> \n'
+        '(0 summarizes all newsletters)', aliases=['s'])
 
         parser_summary.add_argument('index', help=
-        'choose # of newsletter to summarize. 0 summarizes all newsletters ')
+        'choose # of newsletter to summarize.')
 
         parser_summary.set_defaults(func=self.summarize_chosen_article)
 
         # download arg
         parser_download = subparsers.add_parser('download', help=
-        'downloading selected newsletters', aliases=['d'])
+        'downloading selected newsletters. Syntax: <d> <index>', aliases=['d'])
 
         parser_download.add_argument('index', help=
         'Choose # of newsletter to download')
@@ -168,7 +168,8 @@ class TextSummaryDownload:
 
         # list arg
         parser_list = subparsers.add_parser('list', help=
-        'displays list of newsletters that can be summarized and downloaded',
+        'displays list of newsletters that can be summarized and downloaded.'
+        'Syntax: <l>',
                                             aliases=['l'])
         # list requires no index and will return a list of all headers
 
@@ -176,7 +177,7 @@ class TextSummaryDownload:
 
         # delete arg
         parser_edit = subparsers.add_parser('delete', help=
-        'delete newsletter from list', aliases=['del'])
+        'delete newsletter from list. Syntax: <del> <index>', aliases=['del'])
 
         parser_edit.add_argument('index', help=
         'Choose # of newsletter to remove')
@@ -187,7 +188,7 @@ class TextSummaryDownload:
 
         # add arg
         parser_edit = subparsers.add_parser('add', help=
-        'add newsletter to list', aliases=['add'])
+        'add newsletter to list. Syntax: <add> <url>', aliases=['add'])
 
         parser_edit.add_argument('url', help=
         'Choose url to add')
