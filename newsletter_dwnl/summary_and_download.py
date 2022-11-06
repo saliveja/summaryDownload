@@ -15,12 +15,8 @@ from datetime import date, datetime, timedelta
 import time
 import copy
 import json
-from pprint import pprint
 import argparse
-import sys
-import numpy as np
-import pandas as pd
-from tabulate import tabulate
+import requests, bs4
 import os
 
 class TextSummaryDownload:
@@ -28,11 +24,12 @@ class TextSummaryDownload:
 
     def __init__(self):
         """initializing."""
+        self.file = 'data/dict.json'
         self.dicts = self.get_dicts()
 
     def get_dicts(self):
-        file = 'dict.json'
-        with open(file, 'r+') as f:
+
+        with open(self.file, 'r+') as f:
             dicts = json.load(f)
 
         return dicts
@@ -84,6 +81,7 @@ class TextSummaryDownload:
 
     def download(self, args):
         """Downloading selected article."""
+
         index = int(args.index) - 1
 
         for i, item in enumerate(self.dicts.keys()):
@@ -101,6 +99,7 @@ class TextSummaryDownload:
 
         dicts = self.dicts
         index = int(args.index) - 1
+        print(index)
         for i, item in enumerate(dicts.keys()):
             if i == index:
                 delete = item
@@ -116,13 +115,41 @@ class TextSummaryDownload:
     def new_dict(self, dicts):
         """Save edited dictionary."""
 
-        file = 'dict.json'
         answer = input("Are you sure you want to save this list? y/n ")
         if answer == 'y':
-            with open(file, 'w+') as f:
+            with open(self.file, 'a') as f:
                 json.dump(dicts, f, indent=2)
         else:
             quit()
+
+    def add_dict_item(self, args):
+        """add dictionary item to dict.json"""
+
+        dicts = self.get_dicts()
+        entry = args.url
+
+        names = []
+        res = requests.get(entry)
+        res.raise_for_status()
+
+        soup = bs4.BeautifulSoup(res.text, 'html.parser')
+        result_name = soup.find_all("div", class_="topbar-content")
+        for post in result_name:
+            post_name = post.find("a", class_="navbar-title-link")
+            names.append(post_name.text)
+
+        value = {"link": entry}
+        name = f"{names[0]}"
+
+        dicts[name] = value
+
+        self.save_dicts(dicts)
+
+    def save_dicts(self, dicts):
+        """saving new entry to dicts."""
+
+        with open(self.file, 'w') as f:
+            json.dump(dicts, f, indent=2)
 
     def parser_main(self):
         """argparser - storing arguments and setting default functions."""
@@ -142,17 +169,7 @@ class TextSummaryDownload:
         parser_summary.add_argument('index', help=
         'choose # of newsletter to summarize. 0 summarizes all newsletters ')
 
-        # parser_summary.add_argument('sumall', help='summary of all newsletters')
-
         parser_summary.set_defaults(func=self.summarize_chosen_article)
-
-        # # summary all arg
-        # parser_summary_all = subparsers.add_parser('sumall', help=
-        # 'summary of all newsletters', aliases=['a'])
-        # #
-        # # parser_summary.add_argument('index', help=
-        # # 'Index 0 summarizes all newsletter', action='store_true')
-        # parser_summary_all.set_defaults(func=self.all_articles_summary)
 
         # download arg
         parser_download = subparsers.add_parser('download', help=
@@ -166,10 +183,11 @@ class TextSummaryDownload:
         parser_list = subparsers.add_parser('list', help=
         'displays list of newsletters that can be summarized and downloaded',
                                             aliases=['l'])
+        # list requires no index and will return a list of all headers
 
         parser_list.set_defaults(func=self.summary_headers)
 
-        # edit arg
+        # delete arg
         parser_edit = subparsers.add_parser('delete', help=
         'delete newsletter from list', aliases=['del'])
 
@@ -177,6 +195,17 @@ class TextSummaryDownload:
         'Choose # of newsletter to remove')
 
         parser_edit.set_defaults(func=self.remove_dictItem)
+        # del is the action, index the number of the newsletter to delete
+        # 'func' calls for the function within this class
+
+        # add arg
+        parser_edit = subparsers.add_parser('add', help=
+        'add newsletter to list', aliases=['add'])
+
+        parser_edit.add_argument('url', help=
+        'Choose url to add')
+
+        parser_edit.set_defaults(func=self.add_dict_item)
 
         args = parser.parse_args()
         args.func(args)
