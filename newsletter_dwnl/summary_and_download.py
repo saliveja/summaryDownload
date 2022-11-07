@@ -35,8 +35,31 @@ class TextSummaryDownload:
 
         for i, (item, dct) in enumerate(self.dicts.items()):
             name = item
-            for key, index in dct.items():
-                link = dct["link"]
+            link = dct["link"]
+            if link.endswith('feed'):
+                title, date, sum, address = sm.sum_medium(link)
+            else:
+                title, date, sum, address = summary.summary(link)
+
+            print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
+            print(address)
+
+    def summarize_chosen_article(self, args):
+        """Summarize selected article."""
+
+        index = int(args.index) - 1
+        if index == - 1:
+            self.all_articles_summary()
+        else:
+            self.one_article_summary(index)
+
+    def one_article_summary(self, index):
+        """parsing and printing summary of newsletters."""
+
+        for i, (item, dct) in enumerate(self.dicts.items()):
+            if i == index:
+                name = item
+                link = dct['link']
                 if link.endswith('feed'):
                     title, date, sum, address = sm.sum_medium(link)
                 else:
@@ -45,38 +68,17 @@ class TextSummaryDownload:
                 print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
                 print(address)
 
-    def summarize_chosen_article(self, args):
-        """Summarize selected article."""
-
-        index = int(args.index) -1
-
-        if index == 0:
-            self.all_articles_summary()
-        else:
-            for i, (item, dct) in enumerate(self.dicts.items()):
-                if i == index:
-                    name = item
-                    link = dct['link']
-                    if link.endswith('feed'):
-                        title, date, sum, address = sm.sum_medium(link)
-                    else:
-                        title, date, sum, address = summary.summary(link)
-
-                    print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
-                    print(address)
-
     def download(self, args):
         """Downloading selected article."""
 
         index = int(args.index) - 1
-
         for i, item in enumerate(self.dicts.keys()):
             if i == index:
                 link = self.dicts[item]["link"]
                 name = item
 
                 if link.endswith('feed'):
-                    dm.download_medium(link)
+                    dm.download_medium(link, name)
                 else:
                     d.article_download(link, name)
 
@@ -84,10 +86,8 @@ class TextSummaryDownload:
         """Removing key and value from dictionary."""
 
         dicts = self.dicts
-        index = int(args.index) - 1
-        print(index)
         for i, item in enumerate(dicts.keys()):
-            if i == index:
+            if i == args.index:
                 delete = item
 
         rm_item = dicts.pop(delete)
@@ -124,7 +124,23 @@ class TextSummaryDownload:
             post_name = post.find("a", class_="navbar-title-link")
             names.append(post_name.text)
 
-        value = {"link": entry}
+        if 'medium' in entry:
+            if entry.endswith("/"):
+                edit_entry = f"{entry}feed"
+            else:
+                edit_entry = f"{entry}/feed"
+            value = {"link": edit_entry}
+        elif 'substack' in entry:
+            if entry.endswith("/"):
+                edit_entry = f"{entry}archive"
+            else:
+                edit_entry = f"{entry}/archive"
+            value = {"link": edit_entry}
+        else:
+            print("hint: at present the sites that can be parsed is medium"
+                  "and substack. If you want to add others, please be patient"
+                  "so more options can be added.")
+
         name = f"{names[0]}"
 
         dicts[name] = value
@@ -188,7 +204,14 @@ class TextSummaryDownload:
 
         # add arg
         parser_edit = subparsers.add_parser('add', help=
-        'add newsletter to list. Syntax: <add> <url>', aliases=['add'])
+        'add newsletter to list. Syntax: <add> <url>\n'
+        '| url format (examples): '
+        'https://cobie.substack.com/archive, '
+        'https://cobie.substack.com, '
+        'https://cobie.substack.com/, '
+        'https://medium.com/@TraderScarpa/feed, '
+        'https://medium.com/@TraderScarpa/, '
+        'https://medium.com/@TraderScarpa', aliases=['add'])
 
         parser_edit.add_argument('url', help=
         'Choose url to add')
