@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import summary
 import download as d
 import summary_medium as sm
@@ -5,13 +7,16 @@ import download_medium as dm
 import json
 import argparse
 import requests, bs4
+import os
+import shutil
+import glob
 
 class TextSummaryDownload:
     """program which based on selection can summarize and download newsletters."""
 
     def __init__(self):
         """initializing."""
-        self.file = 'data/dict.json'
+        self.file = self._path()
         self.dicts = self.get_dicts()
 
     def get_dicts(self):
@@ -21,7 +26,24 @@ class TextSummaryDownload:
 
         return dicts
 
-    def summary_headers(self):
+    def _path(self):
+        """defining path for 'dict.json'"""
+
+        filename = 'dict.json'
+        # this returns the original destination of the file
+        # using export changes path to home directory
+        # even if the file is not existing there
+        current_dir = os.getcwd()
+        # return the current dir
+        if filename in current_dir:
+            correct_dir = os.path.abspath(filename)
+        else:
+            filepath = glob.glob(f'**/{filename}', recursive=True)
+            correct_dir = file_path
+
+        return correct_dir
+
+    def summary_headers(self, args):
         """Prints a list of all authors in dict."""
 
         print("\n")
@@ -38,8 +60,10 @@ class TextSummaryDownload:
             link = dct["link"]
             if link.endswith('feed'):
                 title, date, sum, address = sm.sum_medium(link)
+                # 'summary_medium.py' parsing and summarizing medium newsletters
             else:
                 title, date, sum, address = summary.summary(link)
+                # 'summary.py' parsing and summarizing substack newsletter
 
             print(f"\n{i + 1} - {name}, '{title}':\n{date} \n{sum}")
             print(address)
@@ -192,18 +216,18 @@ class TextSummaryDownload:
         parser_list.set_defaults(func=self.summary_headers)
 
         # delete arg
-        parser_edit = subparsers.add_parser('delete', help=
+        parser_delete = subparsers.add_parser('delete', help=
         'delete newsletter from list. Syntax: <del> <index>', aliases=['del'])
 
-        parser_edit.add_argument('index', help=
+        parser_delete.add_argument('index', help=
         'Choose # of newsletter to remove')
 
-        parser_edit.set_defaults(func=self.remove_dictItem)
+        parser_delete.set_defaults(func=self.remove_dictItem)
         # del is the action, index the number of the newsletter to delete
         # 'func' calls for the function within this class
 
         # add arg
-        parser_edit = subparsers.add_parser('add', help=
+        parser_add = subparsers.add_parser('add', help=
         'add newsletter to list. Syntax: <add> <url>\n'
         '| url format (examples): '
         'https://cobie.substack.com/archive, '
@@ -213,10 +237,10 @@ class TextSummaryDownload:
         'https://medium.com/@TraderScarpa/, '
         'https://medium.com/@TraderScarpa', aliases=['add'])
 
-        parser_edit.add_argument('url', help=
+        parser_add.add_argument('url', help=
         'Choose url to add')
 
-        parser_edit.set_defaults(func=self.add_dict_item)
+        parser_add.set_defaults(func=self.add_dict_item)
 
         args = parser.parse_args()
         args.func(args)
