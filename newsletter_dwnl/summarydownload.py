@@ -32,7 +32,7 @@ class TextSummaryDownload:
         filename = 'newsdict.json'
         filepath = glob.glob(f'**/{filename}', recursive=True)
         # returns the path for the file 'dict.json'
-        abs_path = os.path.abspath(filepath)
+        abs_path = os.path.abspath(filepath[0])
 
         return abs_path
 
