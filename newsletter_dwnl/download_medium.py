@@ -1,6 +1,5 @@
 import feedparser
 import pdfkit
-import os
 
 def download_medium(link, name):
     """Downloading the latest Medium article."""

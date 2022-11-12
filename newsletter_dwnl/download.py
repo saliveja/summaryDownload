@@ -1,8 +1,5 @@
 import pdfkit
 import requests, bs4
-import os
-from pathlib import Path
-import shutil
 
 def article_download(link, name):
     """Downloading the latest article."""

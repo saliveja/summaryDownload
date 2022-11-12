@@ -8,7 +8,6 @@ import json
 import argparse
 import requests, bs4
 import os
-import shutil
 import glob
 
 class TextSummaryDownload:
