@@ -52,8 +52,9 @@ def article_download(link, name):
     title_select.append(new_title)
     title = title_select[0]
 
+    filename = f'{name}, {title}.pdf'
     print(f"Creating PDF from address: {address}")
-    pdfkit.from_url(address, f"/home/x/Documents/newsletter_pdf/{name}, '{title}'.pdf")
+    pdfkit.from_url(f'{address}, pdf/{filename}')
     # converting html to pdf and downloading
     print(f"Created PDF successfully!")
 

@@ -1,5 +1,6 @@
 import feedparser
 import pdfkit
+import os
 
 def download_medium(link, name):
     """Downloading the latest Medium article."""
@@ -18,8 +19,9 @@ def download_medium(link, name):
     title = titles[0]
     address = links[0]
 
+    filename = f'{name}, {title}.pdf'
     print(f"Creating PDF from address: {address}")
-    pdfkit.from_url(address, f"/home/x/Documents/newsletter_pdf/{name}, '{title}'.pdf")
+    pdfkit.from_url(f'{address}, pdf/{filename}')
     # converting html to pdf and downloading
     print(f"Created PDF {title} successfully!")
     links.clear()
