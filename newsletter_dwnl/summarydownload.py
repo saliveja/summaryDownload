@@ -9,6 +9,7 @@ import argparse
 import requests, bs4
 import os
 import glob
+import copy
 
 class TextSummaryDownload:
     """program which based on selection can summarize and download newsletters."""
@@ -19,6 +20,7 @@ class TextSummaryDownload:
         self.dicts = self.get_dicts()
 
     def get_dicts(self):
+        """loads the json file with all newsletter key pairs """
 
         with open(self.file, 'r+') as f:
             dicts = json.load(f)
@@ -32,6 +34,9 @@ class TextSummaryDownload:
         filepath = glob.glob(f'**/{filename}', recursive=True)
         # returns the path for the file 'dict.json'
         abs_path = os.path.abspath(filepath[0])
+        # creating an absolute path
+        # every user will clone the repo in different places
+        # this automatizes the folder location
 
         return abs_path
 
@@ -41,7 +46,9 @@ class TextSummaryDownload:
         print("\n")
 
         for i, item in enumerate(self.dicts, 1):
+            # for number (integer) and key in the dictionary list
             print(f"{i} - {item.strip()}")
+            # printing number and key
         print("\n")
 
     def all_articles_summary(self):
@@ -49,7 +56,9 @@ class TextSummaryDownload:
 
         for i, (item, dct) in enumerate(self.dicts.items()):
             name = item
+            # item is key name in json dict
             link = dct["link"]
+            # link is the value connected to key 'link'
             if link.endswith('feed'):
                 title, date, sum, address = sm.sum_medium(link)
                 # 'summary_medium.py' parsing and summarizing medium newsletters
@@ -64,6 +73,7 @@ class TextSummaryDownload:
         """Summarize selected article."""
 
         index = int(args.index) - 1
+        # index is argparse, command line selection
         if index == - 1:
             self.all_articles_summary()
         else:
@@ -74,9 +84,12 @@ class TextSummaryDownload:
 
         for i, (item, dct) in enumerate(self.dicts.items()):
             if i == index:
+                # if the number in the list equals args.index number
                 name = item
                 link = dct['link']
                 if link.endswith('feed'):
+                    # the medium articles endswith feed
+                    # to access rss and parse the page
                     title, date, sum, address = sm.sum_medium(link)
                 else:
                     title, date, sum, address = summary.summary(link)
@@ -95,17 +108,20 @@ class TextSummaryDownload:
 
                 if link.endswith('feed'):
                     dm.download_medium(link, name)
+                    # 'download_medium.py' to parse prog, convert to pdf
+                    # and download with pdfkit
                 else:
                     d.article_download(link, name)
+                    # same as above but parsing with bs4 instead of feedparser
 
     def remove_dictItem(self, args):
         """Removing key and value from dictionary."""
 
+        index = int(args.index) - 1
         dicts = self.dicts
         for i, item in enumerate(dicts.keys()):
-            if i == args.index:
+            if i == index:
                 delete = item
-
         rm_item = dicts.pop(delete)
         print(f"{rm_item} has been deleted")
 
@@ -119,8 +135,9 @@ class TextSummaryDownload:
 
         answer = input("Are you sure you want to save this list? y/n ")
         if answer == 'y':
-            with open(self.file, 'a') as f:
+            with open(self.file, 'w') as f:
                 json.dump(dicts, f, indent=2)
+                # saving edited dict to json file again
         else:
             quit()
 
@@ -129,6 +146,7 @@ class TextSummaryDownload:
 
         dicts = self.get_dicts()
         entry = args.url
+        # add <url> in argparser
 
         names = []
         res = requests.get(entry)
@@ -139,13 +157,22 @@ class TextSummaryDownload:
         for post in result_name:
             post_name = post.find("a", class_="navbar-title-link")
             names.append(post_name.text)
+            # parsing html and adding latest post name to list 'names'
 
         if 'medium' in entry:
+            # if the word 'medium' is in url address
+            # creating two conditions
             if entry.endswith("/"):
+                # if the users address input ends with '/'
                 edit_entry = f"{entry}feed"
+                # the function will only add the word 'feed'
             else:
                 edit_entry = f"{entry}/feed"
+                # if it doesn't
+                # '/feed' will be added to the url
             value = {"link": edit_entry}
+
+
         elif 'substack' in entry:
             if entry.endswith("/"):
                 edit_entry = f"{entry}archive"
