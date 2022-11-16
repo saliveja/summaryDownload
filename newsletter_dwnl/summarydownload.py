@@ -10,6 +10,7 @@ import requests, bs4
 import os
 import glob
 import copy
+import feedparser
 
 class TextSummaryDownload:
     """program which based on selection can summarize and download newsletters."""
@@ -121,6 +122,7 @@ class TextSummaryDownload:
         dicts = self.dicts
         for i, item in enumerate(dicts.keys()):
             if i == index:
+                # number is args.index
                 delete = item
         rm_item = dicts.pop(delete)
         print(f"{rm_item} has been deleted")
@@ -136,6 +138,7 @@ class TextSummaryDownload:
         answer = input("Are you sure you want to save this list? y/n ")
         if answer == 'y':
             with open(self.file, 'w') as f:
+                # overwriting the old dict with new content
                 json.dump(dicts, f, indent=2)
                 # saving edited dict to json file again
         else:
@@ -148,16 +151,8 @@ class TextSummaryDownload:
         entry = args.url
         # add <url> in argparser
 
-        names = []
-        res = requests.get(entry)
-        res.raise_for_status()
-
-        soup = bs4.BeautifulSoup(res.text, 'html.parser')
-        result_name = soup.find_all("div", class_="topbar-content")
-        for post in result_name:
-            post_name = post.find("a", class_="navbar-title-link")
-            names.append(post_name.text)
-            # parsing html and adding latest post name to list 'names'
+        sub_names = []
+        med_names = []
 
         if 'medium' in entry:
             # if the word 'medium' is in url address
@@ -165,36 +160,59 @@ class TextSummaryDownload:
             if entry.endswith("/"):
                 # if the users address input ends with '/'
                 edit_entry = f"{entry}feed"
-                # the function will only add the word 'feed'
+                # only the word 'feed' will be added
             else:
                 edit_entry = f"{entry}/feed"
                 # if it doesn't
                 # '/feed' will be added to the url
-            value = {"link": edit_entry}
 
+            feed = feedparser.parse(edit_entry)
+            for entry in feed.entries:
+                author = entry.author
+                med_names.append(author)
+                name = f"{med_names[0]}"
+                value = {"link": edit_entry}
+                dicts[name] = value
 
         elif 'substack' in entry:
+            # for substack blogs
             if entry.endswith("/"):
+                # if url contains '/'
                 edit_entry = f"{entry}archive"
+                # add archive
             else:
                 edit_entry = f"{entry}/archive"
+
             value = {"link": edit_entry}
+            # the style of the dictionary keypair
+
+            res = requests.get(entry)
+            res.raise_for_status()
+
+            soup = bs4.BeautifulSoup(res.text, 'html.parser')
+            result_name = soup.find_all("div", class_="topbar-content")
+            for post in result_name:
+                post_name = post.find("a", class_="navbar-title-link")
+                sub_names.append(post_name.text)
+                # parsing html and adding latest post name to list 'names'
+                name = f"{sub_names[0]}"
+                dicts[name] = value
         else:
-            print("hint: at present the sites that can be parsed is medium"
-                  "and substack. If you want to add others, please be patient"
-                  "so more options can be added.")
+            print("At present the sites that can be parsed is medium"
+                  "and substack. If you want to add others, contribute to the "
+                  "program or be patient until more options can be added.")
 
-        name = f"{names[0]}"
-
-        dicts[name] = value
+        print(f"saving: {edit_entry}")
 
         self.save_dicts(dicts)
 
     def save_dicts(self, dicts):
         """saving new entry to dicts."""
 
-        with open(self.file, 'w') as f:
+        with open(self.file, 'w+') as f:
             json.dump(dicts, f, indent=2)
+
+        print("completed")
 
     def parser_main(self):
         """argparser - storing arguments and setting default functions."""

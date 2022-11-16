@@ -35,5 +35,3 @@ def sum_medium(link):
     sum = summarize.summarize(article_str, 0.05)
     return title, date_select, sum, address
     dates.clear()
-
-#sum_medium("https://medium.com/@cryptocreddy/feed")

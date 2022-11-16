@@ -14,26 +14,14 @@
   "Ansem": {
     "link": "https://blknoiz06.substack.com/archive"
   },
-  "Cobie": {
-    "link": "https://cobie.substack.com/archive"
-  },
   "Scarpa": {
     "link": "https://medium.com/@TraderScarpa/feed"
   },
-  "Hayes": {
+  "Arthur Hayes": {
     "link": "https://cryptohayes.medium.com/feed"
   },
   "Foo69": {
     "link": "https://fooo69.medium.com/feed"
-  },
-  "Godcomplex182": {
-    "link": "https://medium.com/@godcomplex182/feed"
-  },
-  "Cryptocreddy": {
-    "link": "https://medium.com/@cryptocreddy/feed"
-  },
-  "0xgodking": {
-    "link": "https://medium.com/@0xgodking/feed"
   },
   "Onchain Wizard Newsletter": {
     "link": "https://onchainwizard.substack.com/archive"
@@ -55,5 +43,11 @@
   },
   "Weekly Crypto News about DeFi, NFT, and crypto market": {
     "link": "https://cryptocomresearch.substack.com/archive"
+  },
+  "Pensive Pragmatism by Marco Manoppo": {
+    "link": "https://pensivepragmatism.substack.com/archive"
+  },
+  "CryptoSteven": {
+    "link": "https://medium.com/@cryptoprofeta/feed"
   }
 }
