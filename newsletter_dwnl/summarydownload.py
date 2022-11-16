@@ -188,7 +188,9 @@ class TextSummaryDownload:
 
             res = requests.get(entry)
             res.raise_for_status()
-
+            # bs4 to parse substack url
+            # getting page name
+            # defining style of dict keypair
             soup = bs4.BeautifulSoup(res.text, 'html.parser')
             result_name = soup.find_all("div", class_="topbar-content")
             for post in result_name:
