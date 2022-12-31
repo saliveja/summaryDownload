@@ -6,31 +6,30 @@
 
 - This program summarizes the latest article from sources focusing on
 analysis of crypto markets and macro economics.
-- The user can select which articles to download.
+- The user can select which articles to summarize and download, add newsletters
+to list or remove unwanted ones.
 - The selected articles to download will be converted from html to pdf.
 - The main program is: summary_and_download.py
+- The syntax is: **summarydownload.py <s/summary/d/download/add/delete/del> <-h>/<i><br>**
 
-**Articles included in the program:**
+<h2>examples</h2> <br>
 
-* [The Knower](https://theknower.substack.com/archive)
-* [Wrong a lot](https://wrongalot.substack.com/archive)
-* [Kyla](https://kyla.substack.com/archive)
-* [Ansem](https://blknoiz06.substack.com/archive)
-* [Cobie](https://cobie.substack.com/archive)
-* [Scarpa](https://medium.com/@TraderScarpa/)
-* [Hayes](https://cryptohayes.medium.com/)
-* [Foo69](https://fooo69.medium.com/)
-* [Godcomplex182](https://medium.com/@godcomplex182/)
-* [cryptocreddy](https://medium.com/@cryptocreddy/)
-* [0xgodking](https://medium.com/@0xgodking/)
-* [Onchainwizard](https://onchainwizard.substack.com/archive)
-* [No sleep](https://nosleep.substack.com/archive)
-* [Kyle](https://0xfren.substack.com/archive)
-* [The reading ape](https://thereadingape.substack.com/archive)
-* [Nat](https://crypto.nateliason.com/)
-* [Rain and coffee](https://rainandcoffee.substack.com/archive)
-* [The Macro compass](https://themacrocompass.substack.com/archive)
-* [Not boring](https://www.notboring.co/)
+Summarize first article
+```
+$ summarydownload.py s 1 
+```
+Download the fifth article
+
+```
+$ summarydownload d 5 
+```
+
+Using help (observe that help had -h and not only the letter)
+
+```
+$ summarydownload.py s -h
+```
+
 
 ## Installation & Dependencies
 ```
@@ -45,7 +44,8 @@ $ sudo apt update
 $ sudo apt install wget
 $ wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb 
 $ sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
-(The two last commands are including packages for Ubuntu. Please check needed packade here: https://wkhtmltopdf.org/downloads.html)
+(The two last commands are including packages for Ubuntu. Please check needed package for your OS here: 
+https://wkhtmltopdf.org/downloads.html)
 ```
 
 **Install or update pip**
@@ -63,7 +63,10 @@ These modules are needed to run the program:
 - bs4
 - spacy
 - string
-- heapq *(This module shall be a part of the standard library in Python)*
+- json
+- argparse
+- os
+- glob
 - pdfkit
 - feedparser
 
@@ -80,6 +83,6 @@ $ python3 -m spacy download en_core_web_sm
 
 ## Run
 ```
-$ cd ~/wiki/tools/newsletter_dwnl
-$ python summary_and_download.py
+$ cd ~/summaryDownload/newsletter_dwnl
+$ python summary_and_download.py <s/summary/d/download/add/delete/del> <-h>/<i>
 ```

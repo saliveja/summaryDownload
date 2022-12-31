@@ -47,11 +47,11 @@ def summary(link):
     sum = summarize.summarize(article_str, 0.05)
     if len(sum) < 300:
         sum = article_str
-        print("!! THIS IS A PAYWALLED ARTICLE !!")
+        print(f"{title}, {date}\n{address}\n!!THIS IS A PAYWALLED ARTICLE!!")
     else:
-        # print(f"{title}, {date}\n{sum}\n{address}\n\n")
+        #print(f"{title}, {date}\n{sum}\n{address}\n\n")
         return title, date, sum, address
 
 
-
-#summary("https://themacrocompass.substack.com/archive")
+#
+# summary("https://cryptocomresearch.substack.com/archive")

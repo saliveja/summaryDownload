@@ -9,7 +9,6 @@ import argparse
 import requests, bs4
 import os
 import glob
-import copy
 import feedparser
 
 class TextSummaryDownload:
